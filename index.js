@@ -1,64 +1,79 @@
-const body = document.querySelector('body');
+const body = document.querySelector("body");
+const grid = document.querySelector(".grid-icon");
+const gridMenu = document.querySelector(".grid-menu");
+const form = document.querySelector("form");
+const search = document.querySelector("#search-bar-text");
+const cross = document.querySelector(".search-cross");
+const mic = document.querySelector(".search-mic");
+const micText = document.querySelector("#searchby-text-1");
+const camera = document.querySelector(".search-lens");
+const cameraText = document.querySelector("#searchby-text-2");
 
-const grid = document.querySelector('.grid-icon');
+function getLocalStream(video, audio) {
+  navigator.mediaDevices
+    .getUserMedia({ video, audio })
+    .then((stream) => {
+      window.localStream = stream; // A
+      window.localAudio.srcObject = stream; // B
+      window.localAudio.autoplay = true; // C
+    })
+    .catch((err) => {
+      console.error(`Error occured: ${err}`);
+    });
+}
 
-const gridMenu = document.querySelector('.grid-menu');
+grid.addEventListener("click", (e) => {
+  // gridMenu.style.visibility = (gridMenu.style.visibility == 'hidden') ? 'visible' : 'hidden';
+  gridMenu.classList.toggle("hide");
+  e.stopPropagation();
+});
 
-const form = document.querySelector('form');
+body.addEventListener("click", () => {
+  gridMenu.classList.add("hide");
+});
 
-const search = document.querySelector('#search-bar-text');
+search.addEventListener("input", () => {
+  if (search.value != "") {
+    cross.classList.remove("hide");
+  }
+});
 
-const cross = document.querySelector('.search-cross');
+cross.addEventListener("click", () => {
+  search.value = "";
+  cross.classList.add("hide");
+});
 
-const mic = document.querySelector('.search-mic');
-const micText = document.querySelector('#searchby-text-1');
+mic.addEventListener("mouseenter", () => {
+  micText.classList.remove("hide");
+});
 
-const camera = document.querySelector('.search-lens');
-const cameraText = document.querySelector('#searchby-text-2');
+mic.addEventListener("mouseleave", () => {
+  micText.classList.add("hide");
+});
 
-grid.addEventListener('click', (e) => {
-    // gridMenu.style.visibility = (gridMenu.style.visibility == 'hidden') ? 'visible' : 'hidden';
-    gridMenu.classList.toggle('hide');
-    e.stopPropagation();
-})
+mic.addEventListener("click", () => {
+  getLocalStream(false, true);
+});
 
-body.addEventListener('click', () => {
-    gridMenu.classList.add('hide');
-})
+camera.addEventListener("mouseenter", () => {
+  cameraText.classList.remove("hide");
+});
 
-search.addEventListener('input', () => {
-    if(search.value != "") {
-        cross.classList.remove('hide');
-    }
-})
+camera.addEventListener("mouseleave", () => {
+  cameraText.classList.add("hide");
+});
 
-cross.addEventListener('click', () => {
-    search.value = "";
-    cross.classList.add('hide');
-})
+camera.addEventListener("click", () => {
+  getLocalStream(true, false);
+});
 
-mic.addEventListener('mouseenter', () => {
-    micText.classList.remove('hide');
-})
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const searchData = search.value;
 
-mic.addEventListener('mouseleave', () => {
-    micText.classList.add('hide');
-})
+  if (!searchData) {
+    return;
+  }
 
-mic.addEventListener('click', () => {
-    alert("www.google.co.in wants to use your microphone.")
-})
-
-camera.addEventListener('mouseenter', () => {
-    cameraText.classList.remove('hide');
-})
-
-camera.addEventListener('mouseleave', () => {
-    cameraText.classList.add('hide');
-})
-
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const searchData = search.value;
-    location.href = `https://www.google.com/search?q=${searchData}&sxsrf=APwXEdfRzt28vl-5-hc8DqFBqnsZuIw6zg%3A1681978287354&ei=r_NAZJyfFamhseMP_sWnuAQ&gs_ssp=eJzj4tLP1TfIyK1MKy5TYDRgdGDw4khLTE5Nys_PBgBmYAfL&oq=fac&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAxgBMgQIIxAnMhMILhCDARDHARCxAxDRAxCKBRBDMg0IABCKBRCxAxCDARBDMgcIABCKBRBDMgcIABCKBRBDMg0IABCKBRCxAxCDARBDMgoIABCKBRCxAxBDMggIABCABBCxAzILCAAQgAQQsQMQgwEyCggAEIoFELEDEEM6EQguEIMBEMcBELEDENEDEIAEOhEILhCABBCxAxCDARDHARDRAzoICC4QgAQQsQM6DgguEIAEELEDEIMBENQCOgoILhCKBRDUAhBDOg0ILhCKBRCxAxCDARBDOgoILhCKBRCxAxBDOg0ILhCKBRDHARDRAxBDOhMILhCKBRCxAxCDARDHARDRAxBDOhAILhCKBRCxAxCDARDUAhBDOh4ILhCDARDHARCxAxDRAxCKBRBDENwEEN4EEOAEGAFKBAhBGABQAFiVEmDfHWgAcAB4AIAB7gGIAa8HkgEFMC4zLjKYAQCgAQHAAQHaAQYIARABGBQ&sclient=gws-wiz-serp`;
-})
+  location.href = `https://www.google.com/search?q=${searchData}`;
+});
